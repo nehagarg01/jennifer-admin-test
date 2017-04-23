@@ -1,0 +1,90 @@
+{% extends 'products/product_list.html' %}
+{% load bootstrap3 %}
+
+{% block title %}{{ object|default:"Create Product" }}{% endblock %}
+
+{% block actions %}{% endblock %}
+
+{% block breadcrumbs %}
+{{ block.super }}
+{% if object %}
+	<li><a href="{% url 'product-update' object.pk %}">{{ object }}</a></li>
+{% else %}
+	<li><a href="{% url 'product-create' %}">Create</a></li>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="hpanel">
+	<div class="panel-body">
+		<form method="post">
+			{% csrf_token %}
+			<div class="row">
+				<div class="col-sm-4">
+					{% bootstrap_field form.title %}
+				</div>
+				<div class="col-sm-2">
+					{% bootstrap_field form.handle %}
+				</div>
+				<div class="col-sm-2">
+					{% bootstrap_field form.vendor %}
+				</div>
+				<div class="col-sm-2">
+					{% bootstrap_field form.product_type %}
+				</div>
+				<div class="col-sm-2">
+					{% bootstrap_field form.shopify_id %}
+				</div>
+			</div>
+			{% bootstrap_field form.body_html %}
+			<div class="row">
+				<div class="col-sm-3">
+					{% bootstrap_field form.materials %}
+				</div>
+				<div class="col-sm-3">
+					{% bootstrap_field form.styles %}
+				</div>
+				<div class="col-sm-3">
+					{% bootstrap_field form.features %}
+				</div>
+			</div>
+			<hr/>
+			<h3>DIMENSIONS</h3>
+			{{ formset.management_form }}
+			{% for dimension_form in formset %}
+			{{ dimension_form.id }}
+			<div class="row">
+				<div class="col-lg-3">
+					{% bootstrap_field dimension_form.title %}
+				</div>
+				<div class="col-lg-1">
+					{% bootstrap_field dimension_form.width %}
+				</div>
+				<div class="col-lg-1">
+					{% bootstrap_field dimension_form.depth %}
+				</div>
+				<div class="col-lg-1">
+					{% bootstrap_field dimension_form.height %}
+				</div>
+			</div>
+			{% endfor %}
+
+			{% comment %}
+			<hr/>
+			<div class="radio radio-inline">
+        <input type="radio" id="inlineRadio1" value="single" name="radioInline" checked="">
+        <label for="inlineRadio1"> Single Product </label>
+      </div>
+			<div class="radio radio-inline">
+        <input type="radio" id="inlineRadio2" value="multiple" name="radioInline">
+        <label for="inlineRadio2"> Multiple Options </label>
+      </div>
+			<div class="clearfix"></div>
+			{% endcomment %}
+
+			<button type="submit" class="btn btn-success">Save Changes</button>
+		</form>
+	</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends 'products/product_list.html' %}
+{% load bootstrap3 %}
+{% load core %}
+
+{% block title %}{{ object }}{% endblock %}
+
+{% block actions %}
+<a class="btn btn-primary btn-sm" href="{% url 'product-update' object.pk %}">Edit</a>
+<a class="btn btn-danger btn-sm" href="{% url 'product-delete' object.pk %}">Delete</a>
+<a class="btn btn-default btn-sm" href="{% url 'product-push' object.pk %}">Push</a>
+<a class="btn btn-default btn-sm" href="{% url 'product-pull' object.pk %}">Pull</a>
+
+{% endblock %}
+
+{% block breadcrumbs %}
+{{ block.super }}
+<li><a href="{% url 'product-detail' object.pk %}">{{ object }}</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="hpanel">
+	<div class="panel-body">
+		<div class="row">
+			<div class="form-group col-md-6">
+				<label>Title</label>
+				<p class="form-control-static">{{ object.title }}</p>
+			</div>
+			<div class="form-group col-md-6">
+				<label>Vendor</label>
+				<p class="form-control-static">{{ object.vendor }}</p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label>Description</label>
+			{{ object.body_html|safe }}
+		</div>
+		<div class="row">
+			<div class="form-group col-md-3">
+				<label>Handle</label>
+				<p class="form-control-static">{{ object.handle }}</p>
+			</div>
+			<div class="form-group col-md-3">
+				<label>Shopify ID</label>
+				<p class="form-control-static">{{ object.shopify_id }}</p>
+			</div>
+			<div class="form-group col-md-3">
+				<label>Product Type</label>
+				<p class="form-control-static">{{ object.product_type }}</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<label>Tags</label>
+				<p class="form-control-static">{{ object.tags }}</p>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<div class="hpanel">
+	<div class="panel-body">
+		<h2>
+			Variants
+			<a class="btn btn-primary btn-sm pull-right" href="{% url 'product-variants-update' object.pk %}">Edit Variants</a>
+		</h2>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Sku</th>
+					<th>Option 1</th>
+					<th>Option 2</th>
+					<th>Option 3</th>
+					<th>Sale Price</th>
+					<th>Price</th>
+					<th>Compare</th>
+					<th>Pieces</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for v in object.variants.all %}
+				<tr>
+					<td>{{ v.sku }}</td>
+					<td>{{ v.option1 }}</td>
+					<td>{{ v.option2 }}</td>
+					<td>{{ v.option3 }}</td>
+					<td>{{ v.sale_price }}</td>
+					<td>{{ v.price }}</td>
+					<td>{{ v.compare_at_price }}</td>
+					<td>{{ v.pieces }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div class="hpanel">
+	<div class="panel-body">
+		<h2>
+			Scheduled Changes
+			<a class="btn btn-primary btn-sm pull-right" href="{% url 'product-schedule-change' object.pk %}">Add Change</a>
+		</h2>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Variant</th>
+					<th>Sale Price</th>
+					<th>Price</th>
+					<th>Compare</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for change in changes %}
+				{% for v in change.json %}
+				<tr>
+					<td>{% if forloop.first %}{{ change.schedule.date }}{% endif %}</td>
+					<td>{{ v.title }}</td>
+					<td>{{ v.sale_price }}</td>
+					<td>{{ v.price }}</td>
+					<td>{{ v.compare_at_price }}</td>
+					<td>
+						{% if forloop.first %}
+							<a class="btn btn-xs btn-danger" href="{% url 'change-delete' change.pk %}">Delete</a>
+						{% endif %}
+					</td>
+				</tr>
+				{% endfor %}
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'products/product_detail.html' %}
+{% load bootstrap3 %}
+
+{% block title %}{{ object }}: Schedule Change{% endblock %}
+
+{% block actions %}{% endblock %}
+
+{% block breadcrumbs %}
+{{ block.super }}
+<li><a href="{% url 'product-schedule-change' object.pk %}">Schedule Change</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="hpanel">
+	<div class="panel-body">
+		<form method="post">
+			{% csrf_token %}
+			<div class="row">
+				<div class="col-sm-4">
+					{% bootstrap_field form.schedule %}
+				</div>
+			</div>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Title</th>
+						<th>Sale Price</th>
+						<th>Price</th>
+						<th>Compare At Price</th>
+					</tr>
+				</thead>
+				{{ formset.management_form }}
+				{% for f in formset %}
+				{{ f.id }}
+				<tr>
+					<td>
+						{{ f.title.value }}
+						<input class="form-control" name="form-{{ forloop.counter0 }}-title" value="{{ f.title.value }}" type="hidden">
+						<input class="form-control" name="form-{{ forloop.counter0 }}-shopify_id" value="{{ f.shopify_id.value }}" type="hidden">
+					</td>
+					<td>
+						{% bootstrap_field f.sale_price show_label=False %}
+					</td>
+					<td>
+						{% bootstrap_field f.price show_label=False %}
+					</td>
+					<td>
+						{% bootstrap_field f.compare_at_price show_label=False %}
+					</td>
+				</tr>
+				{% endfor %}
+			</table>
+
+			<button type="submit" class="btn btn-success">Save Changes</button>
+		</form>
+	</div>
+</div>
+
+{% endblock %}
